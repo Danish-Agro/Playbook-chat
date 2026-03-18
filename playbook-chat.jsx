@@ -1,0 +1,163 @@
+﻿import "./playbook-chat.css";
+import { SendIcon, BotMark, TypingDots } from "./playbook-chat.components.jsx";
+import { SUGGESTIONS } from "./playbook-chat.constants.js";
+import { usePlaybookChat } from "./usePlaybookChat.js";
+
+export default function PlaybookSearch(props = {}) {
+  const {
+    apiEndpoint = "/api/playbook-chat",
+    suggestions = SUGGESTIONS,
+  } = props;
+
+  const {
+    mode,
+    input,
+    setInput,
+    messages,
+    loading,
+    bottomRef,
+    textareaRef,
+    chatTextareaRef,
+    autoResize,
+    send,
+    onKey,
+    reset,
+  } = usePlaybookChat({ apiEndpoint });
+
+  return (
+    <div className="ps-root">
+      <header className="ps-header">
+        <div className="ps-logo">
+          <div className="ps-logo-mark">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <circle cx="9" cy="7" r="3" fill="white" />
+              <path d="M3 17c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </div>
+          <div>
+            <span className="ps-logo-text">AI Playbook</span>
+            <span className="ps-logo-sub"> · Danish Agro Group</span>
+          </div>
+        </div>
+        {mode === "chat" && (
+          <button className="ps-reset-btn" onClick={reset}>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <path d="M8 2L4 6.5L8 11" stroke="#426716" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            New question
+          </button>
+        )}
+      </header>
+
+      {mode === "search" && (
+        <div className="ps-search-view">
+          <div className="ps-eyebrow">AI Playbook Assistant</div>
+          <h1 className="ps-headline">
+            Ask anything about
+            <br />
+            <span>using AI at work</span>
+          </h1>
+          <p className="ps-subline">
+            Get instant answers on rules, data safety, prompt techniques, and approved tools — straight from the Danish Agro AI Playbook.
+          </p>
+
+          <div className="ps-searchbox">
+            <textarea
+              ref={textareaRef}
+              rows={1}
+              placeholder="e.g. What data can I not share with AI tools?"
+              value={input}
+              onChange={(e) => {
+                setInput(e.target.value);
+                autoResize(textareaRef);
+              }}
+              onKeyDown={onKey()}
+              autoFocus
+            />
+            <button className="ps-search-send" onClick={() => send()} disabled={!input.trim() || loading}>
+              <SendIcon />
+            </button>
+          </div>
+
+          <div className="ps-or">or try a question</div>
+
+          <div className="ps-chips">
+            {suggestions.map((s, i) => (
+              <button key={i} className="ps-chip" onClick={() => send(s)}>
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {mode === "chat" && (
+        <div className="ps-chat-view">
+          <div className="ps-messages">
+            {messages.map((m, i) => (
+              <div key={i}>
+                <div className={`ps-msg ${m.role}`}>
+                  {m.role === "assistant" && <BotMark />}
+                  {m.role === "user" && (
+                    <div className="ps-user-mark">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <circle cx="8" cy="5.5" r="2.5" fill="#849938" />
+                        <path d="M3 14c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="#849938" strokeWidth="1.3" strokeLinecap="round" />
+                      </svg>
+                    </div>
+                  )}
+                  <div className="ps-msg-content">
+                    {m.content}
+                    {m.role === "assistant" && Array.isArray(m.sources) && m.sources.length > 0 && (
+                      <div className="ps-sources">
+                        {m.sources.map((source, sourceIndex) => (
+                          <div key={`${source.file}-${source.heading}-${sourceIndex}`} className="ps-source-item">
+                            <div className="ps-source-meta">
+                              {source.file} · {source.heading}
+                            </div>
+                            <div className="ps-source-excerpt">{source.excerpt}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {i < messages.length - 1 && i % 2 === 1 && <div className="ps-msg-divider" style={{ marginTop: 14 }} />}
+              </div>
+            ))}
+            {loading && (
+              <div className="ps-msg assistant">
+                <BotMark />
+                <div className="ps-msg-content">
+                  <TypingDots />
+                </div>
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+
+          <div className="ps-chat-input-wrap">
+            <div className="ps-chat-inputbox">
+              <textarea
+                ref={chatTextareaRef}
+                rows={1}
+                placeholder="Ask a follow-up question..."
+                value={input}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  autoResize(chatTextareaRef);
+                }}
+                onKeyDown={onKey()}
+                autoFocus
+              />
+              <button className="ps-chat-send" onClick={() => send()} disabled={!input.trim() || loading}>
+                <SendIcon />
+              </button>
+            </div>
+            <p className="ps-chat-hint">Press Enter to send · Shift + Enter for new line</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

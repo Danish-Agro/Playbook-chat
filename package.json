@@ -1,0 +1,21 @@
+{
+  "name": "playbook-chat",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node ./scripts/vite-safe.cjs dev",
+    "dev:ui": "node ./scripts/vite-safe.cjs dev",
+    "dev:api": "node --env-file=.env ./server/index.js",
+    "build": "node ./scripts/vite-safe.cjs build",
+    "preview": "node ./scripts/vite-safe.cjs preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^4.5.14"
+  }
+}
