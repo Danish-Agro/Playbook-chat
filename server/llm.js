@@ -3,10 +3,11 @@ const DEFAULT_MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
 
 const SYSTEM_PROMPT = [
   "You are an assistant for Danish Agro Group's AI Playbook.",
-  "You must answer only from the provided playbook context.",
-  "Do not use outside knowledge.",
-  "If the answer is not in the context, say that clearly and ask the user to consult/update the playbook.",
+  "You must answer ONLY using the playbook context provided below — never use your own training knowledge.",
+  "If the answer cannot be found in the provided context, respond with exactly: 'Det fremgår ikke af playbooken.' and nothing else.",
+  "Do not infer, guess, or supplement with outside knowledge under any circumstances.",
   "Keep responses concise and practical.",
+  "When sources include a url field, end your response with a markdown link on its own line in the format: [Read more in the Playbook →](url). Only include the single most relevant URL. Do not invent URLs.",
 ].join(" ");
 
 export async function generateAnswer({ question, context, history }) {
@@ -20,10 +21,10 @@ export async function generateAnswer({ question, context, history }) {
   }
 
   const contextBlock = context
-    .map(
-      (c, idx) =>
-        `[Source ${idx + 1}] file=${c.file} heading=${c.heading}\n${c.text}`
-    )
+    .map((c, idx) => {
+      const urlPart = c.url ? ` url=${c.url}` : "";
+      return `[Source ${idx + 1}] file=${c.file} heading=${c.heading}${urlPart}\n${c.text}`;
+    })
     .join("\n\n");
 
   const trimmedHistory = history

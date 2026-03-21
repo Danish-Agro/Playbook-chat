@@ -1,4 +1,5 @@
 ﻿import "./playbook-chat.css";
+import ReactMarkdown from "react-markdown";
 import { SendIcon, BotMark, TypingDots } from "./playbook-chat.components.jsx";
 import { SUGGESTIONS } from "./playbook-chat.constants.js";
 import { usePlaybookChat } from "./usePlaybookChat.js";
@@ -107,18 +108,18 @@ export default function PlaybookSearch(props = {}) {
                     </div>
                   )}
                   <div className="ps-msg-content">
-                    {m.content}
-                    {m.role === "assistant" && Array.isArray(m.sources) && m.sources.length > 0 && (
-                      <div className="ps-sources">
-                        {m.sources.map((source, sourceIndex) => (
-                          <div key={`${source.file}-${source.heading}-${sourceIndex}`} className="ps-source-item">
-                            <div className="ps-source-meta">
-                              {source.file} · {source.heading}
-                            </div>
-                            <div className="ps-source-excerpt">{source.excerpt}</div>
-                          </div>
-                        ))}
-                      </div>
+                    {m.role === "assistant" ? (
+                      <ReactMarkdown
+                        components={{
+                          a: ({ href, children }) => (
+                            <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>
+                          ),
+                        }}
+                      >
+                        {m.content}
+                      </ReactMarkdown>
+                    ) : (
+                      m.content
                     )}
                   </div>
                 </div>

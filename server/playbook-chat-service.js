@@ -13,6 +13,7 @@ function toSourceMeta(chunks) {
   return chunks.map((c) => ({
     file: c.file,
     heading: c.heading,
+    url: c.url || null,
     excerpt: c.text.slice(0, 220).trim(),
   }));
 }

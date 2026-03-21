@@ -1,5 +1,6 @@
 ﻿import fs from "node:fs/promises";
 import path from "node:path";
+import { resolveUrl } from "./sitemap.js";
 
 const DOCS_ROOT = path.resolve(process.cwd(), "knowledge", "documents");
 const SUPPORTED_EXTENSIONS = new Set([".md", ".markdown", ".txt"]);
@@ -47,14 +48,15 @@ function makeChunks(filePath, content) {
     if (!text) return;
 
     const maxSize = 1200;
+    const url = resolveUrl(heading);
     if (text.length <= maxSize) {
-      chunks.push({ file: rel, heading, text, tokens: tokenize(text) });
+      chunks.push({ file: rel, heading, url, text, tokens: tokenize(text) });
       return;
     }
 
     for (let i = 0; i < text.length; i += maxSize) {
       const part = text.slice(i, i + maxSize);
-      chunks.push({ file: rel, heading, text: part, tokens: tokenize(part) });
+      chunks.push({ file: rel, heading, url, text: part, tokens: tokenize(part) });
     }
   };
 
