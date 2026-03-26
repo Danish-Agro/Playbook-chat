@@ -53,6 +53,16 @@
         }
         .ps-reset-btn:hover { background: #f4f8eb; border-color: #849938; }
 
+        .ps-retry-btn {
+          margin-top: 8px; margin-left: 36px;
+          background: transparent; border: 1px solid #e0c0b0;
+          color: #a04020; padding: 5px 14px; border-radius: 6px;
+          font-size: 12px; cursor: pointer; transition: all .15s;
+          font-family: 'Open Sans', sans-serif;
+        }
+        .ps-retry-btn:hover { background: #fff3ef; border-color: #c05030; }
+        .ps-retry-btn:disabled { opacity: 0.5; cursor: default; }
+
         /* Search mode */
         .ps-search-view {
           flex: 1; display: flex; flex-direction: column;

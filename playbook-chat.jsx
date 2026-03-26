@@ -21,6 +21,7 @@ export default function PlaybookSearch(props = {}) {
     chatTextareaRef,
     autoResize,
     send,
+    retry,
     onKey,
     reset,
   } = usePlaybookChat({ apiEndpoint });
@@ -41,8 +42,8 @@ export default function PlaybookSearch(props = {}) {
           </div>
         </div>
         {mode === "chat" && (
-          <button className="ps-reset-btn" onClick={reset}>
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <button className="ps-reset-btn" onClick={reset} aria-label="Start new question">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
               <path d="M8 2L4 6.5L8 11" stroke="#426716" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             New question
@@ -66,6 +67,7 @@ export default function PlaybookSearch(props = {}) {
             <textarea
               ref={textareaRef}
               rows={1}
+              aria-label="Ask a question about the AI Playbook"
               placeholder="e.g. What data can I not share with AI tools?"
               value={input}
               onChange={(e) => {
@@ -75,7 +77,7 @@ export default function PlaybookSearch(props = {}) {
               onKeyDown={onKey()}
               autoFocus
             />
-            <button className="ps-search-send" onClick={() => send()} disabled={!input.trim() || loading}>
+            <button className="ps-search-send" onClick={() => send()} disabled={!input.trim() || loading} aria-label="Send question">
               <SendIcon />
             </button>
           </div>
@@ -123,6 +125,11 @@ export default function PlaybookSearch(props = {}) {
                     )}
                   </div>
                 </div>
+                {m.role === "assistant" && m.isError && i === messages.length - 1 && (
+                  <button className="ps-retry-btn" onClick={retry} disabled={loading} aria-label="Retry">
+                    Try again
+                  </button>
+                )}
                 {i < messages.length - 1 && i % 2 === 1 && <div className="ps-msg-divider" style={{ marginTop: 14 }} />}
               </div>
             ))}
@@ -142,6 +149,7 @@ export default function PlaybookSearch(props = {}) {
               <textarea
                 ref={chatTextareaRef}
                 rows={1}
+                aria-label="Ask a follow-up question"
                 placeholder="Ask a follow-up question..."
                 value={input}
                 onChange={(e) => {
@@ -151,7 +159,7 @@ export default function PlaybookSearch(props = {}) {
                 onKeyDown={onKey()}
                 autoFocus
               />
-              <button className="ps-chat-send" onClick={() => send()} disabled={!input.trim() || loading}>
+              <button className="ps-chat-send" onClick={() => send()} disabled={!input.trim() || loading} aria-label="Send message">
                 <SendIcon />
               </button>
             </div>

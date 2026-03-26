@@ -4,6 +4,22 @@ import { resolveUrl } from "./sitemap.js";
 
 const DOCS_ROOT = path.resolve(process.cwd(), "knowledge", "documents");
 const SUPPORTED_EXTENSIONS = new Set([".md", ".markdown", ".txt"]);
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutter
+
+const STOP_WORDS = new Set([
+  // Dansk
+  "jeg", "du", "vi", "det", "den", "de", "han", "hun", "man",
+  "hvad", "hvordan", "hvorfor", "hvornår", "hvilke", "hvilket",
+  "kan", "må", "skal", "bør", "vil", "har", "have", "havde",
+  "er", "var", "og", "eller", "men", "som", "til", "fra", "med",
+  "ikke", "også", "for", "på", "om", "ved", "når", "der", "her",
+  "alle", "noget", "nogen", "mere", "meget",
+  // Engelsk
+  "the", "and", "for", "are", "but", "not", "you", "all", "can",
+  "her", "was", "one", "our", "out", "use", "how", "what", "which",
+  "this", "that", "with", "have", "from", "they", "will", "been",
+  "does", "does", "more", "also", "any", "its",
+]);
 
 let cache = {
   loadedAt: 0,
@@ -15,7 +31,7 @@ function tokenize(text) {
     .toLowerCase()
     .replace(/[^a-z0-9æøå\s]/gi, " ")
     .split(/\s+/)
-    .filter((t) => t.length > 2);
+    .filter((t) => t.length > 2 && !STOP_WORDS.has(t));
 }
 
 async function walk(dir) {
@@ -76,7 +92,7 @@ function makeChunks(filePath, content) {
 
 export async function loadKnowledgeChunks() {
   const now = Date.now();
-  if (now - cache.loadedAt < 15000) return cache.chunks;
+  if (now - cache.loadedAt < CACHE_TTL_MS) return cache.chunks;
 
   try {
     const files = await walk(DOCS_ROOT);
@@ -103,14 +119,27 @@ export async function searchKnowledge(query, limit = 6) {
   const terms = tokenize(query);
   if (!terms.length) return [];
 
+  const headingTermsCache = new Map();
+
   const scored = chunks
     .map((chunk) => {
       let score = 0;
+
       for (const term of terms) {
-        const count = chunk.tokens.filter((t) => t === term).length;
-        score += count;
+        // Tæl eksakte token-matches i brødtekst
+        score += chunk.tokens.filter((t) => t === term).length;
       }
 
+      // Boost hvis søgeord matches i sektionsoverskriften
+      if (!headingTermsCache.has(chunk.heading)) {
+        headingTermsCache.set(chunk.heading, tokenize(chunk.heading));
+      }
+      const headingTokens = headingTermsCache.get(chunk.heading);
+      for (const term of terms) {
+        if (headingTokens.includes(term)) score += 3;
+      }
+
+      // Boost ved eksakt frase-match i teksten
       const wholeQuery = query.trim().toLowerCase();
       if (wholeQuery && chunk.text.toLowerCase().includes(wholeQuery)) {
         score += 5;

@@ -14,7 +14,9 @@ export function createPlaybookAPIClient(options = {}) {
       });
 
       if (!res.ok) {
-        throw new Error(`API request failed with status ${res.status}`);
+        const err = new Error(`API request failed with status ${res.status}`);
+        err.status = res.status;
+        throw err;
       }
 
       const data = await res.json();

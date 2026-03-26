@@ -9,6 +9,7 @@ export function usePlaybookChat(options = {}) {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const lastUserMessageRef = useRef(null);
 
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
@@ -26,6 +27,24 @@ export function usePlaybookChat(options = {}) {
     el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
   };
 
+  const sendMessages = async (updatedMessages) => {
+    setLoading(true);
+    try {
+      const { reply, sources } = await apiClient.send(updatedMessages);
+      setMessages((prev) => [...prev, { role: "assistant", content: reply, sources }]);
+    } catch (err) {
+      const isRateLimited = err?.status === 429;
+      const errorContent = isRateLimited
+        ? "Too many requests. Please wait a moment and try again."
+        : "Something went wrong. Please try again.";
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: errorContent, sources: [], isError: true },
+      ]);
+    }
+    setLoading(false);
+  };
+
   const send = async (text) => {
     const msg = (text || input).trim();
     if (!msg || loading) return;
@@ -35,21 +54,16 @@ export function usePlaybookChat(options = {}) {
     if (chatTextareaRef.current) chatTextareaRef.current.style.height = "auto";
 
     const updated = [...messages, { role: "user", content: msg }];
+    lastUserMessageRef.current = updated;
     setMessages(updated);
     setMode("chat");
-    setLoading(true);
+    await sendMessages(updated);
+  };
 
-    try {
-      const { reply, sources } = await apiClient.send(updated);
-      setMessages((prev) => [...prev, { role: "assistant", content: reply, sources }]);
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Something went wrong. Please try again.", sources: [] },
-      ]);
-    }
-
-    setLoading(false);
+  const retry = async () => {
+    if (!lastUserMessageRef.current || loading) return;
+    setMessages(lastUserMessageRef.current);
+    await sendMessages(lastUserMessageRef.current);
   };
 
   const onKey = () => (e) => {
@@ -77,6 +91,7 @@ export function usePlaybookChat(options = {}) {
     chatTextareaRef,
     autoResize,
     send,
+    retry,
     onKey,
     reset,
   };
