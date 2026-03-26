@@ -111,15 +111,32 @@ export default function PlaybookSearch(props = {}) {
                   )}
                   <div className="ps-msg-content">
                     {m.role === "assistant" ? (
-                      <ReactMarkdown
-                        components={{
-                          a: ({ href, children }) => (
-                            <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>
-                          ),
-                        }}
-                      >
-                        {m.content}
-                      </ReactMarkdown>
+                      <>
+                        <ReactMarkdown
+                          components={{
+                            a: ({ href, children }) => (
+                              <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>
+                            ),
+                          }}
+                        >
+                          {m.content}
+                        </ReactMarkdown>
+                        {Array.isArray(m.sources) && m.sources.some((s) => s.url) && (
+                          <div className="ps-sources">
+                            <div className="ps-sources-heading">Read more in the Playbook</div>
+                            {m.sources.filter((src) => src.url).map((src, si) => {
+                              const title = src.heading || src.title || src.file || "Kilde";
+                              const excerpt = src.excerpt?.replace(/\*\*/g, "").replace(/\*/g, "").trim();
+                              return (
+                                <a key={si} className="ps-source-item" href={src.url} target="_blank" rel="noopener noreferrer">
+                                  <div className="ps-source-meta">{title}</div>
+                                  {excerpt && <div className="ps-source-excerpt">{excerpt}</div>}
+                                </a>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </>
                     ) : (
                       m.content
                     )}

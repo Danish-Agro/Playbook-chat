@@ -126,8 +126,10 @@ export async function searchKnowledge(query, limit = 6) {
       let score = 0;
 
       for (const term of terms) {
-        // Tæl eksakte token-matches i brødtekst
-        score += chunk.tokens.filter((t) => t === term).length;
+        for (const t of chunk.tokens) {
+          if (t === term) score += 1;
+          else if (t.startsWith(term) || term.startsWith(t)) score += 0.5;
+        }
       }
 
       // Boost hvis søgeord matches i sektionsoverskriften
