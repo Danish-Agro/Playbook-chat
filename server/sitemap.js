@@ -13,7 +13,7 @@ const URL_MAP = [
   { url: `${RS}/golden-rules/rule-5-when-in-doubt-ask`, keywords: ["rule 5", "when in doubt, ask"] },
   { url: `${RS}/golden-rules`, keywords: ["the golden rules", "golden rules"] },
   { url: `${RS}/data-protection-basics`, keywords: ["data protection basics", "think before you share", "anonymization: how to do it", "tools and their data security"] },
-  { url: `${RS}/ive-shared-something-i-shouldnt`, keywords: ["mistakes happen — here's what to do", "who to contact", "why reporting matters", "what happens when you report"] },
+  { url: `${RS}/ive-shared-something-i-shouldnt`, keywords: ["mistakes happen \u2014 here\u2019s what to do", "who to contact", "why reporting matters", "what happens when you report"] },
   { url: RS, keywords: ["rules and safety", "rules & safety"] },
 
   // ── Quality Assurance: validation layers ─────────────────────────────────
@@ -64,7 +64,7 @@ const URL_MAP = [
  */
 export function resolveUrl(heading) {
   if (!heading) return null;
-  const h = heading.toLowerCase();
+  const h = heading.normalize("NFC").toLowerCase();
   for (const entry of URL_MAP) {
     for (const kw of entry.keywords) {
       if (h.includes(kw.toLowerCase())) return entry.url;

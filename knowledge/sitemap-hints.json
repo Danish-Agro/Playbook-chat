@@ -1,0 +1,66 @@
+{
+  "_comment": "Maps heading text (after stripping # markers) → canonical page URL. Headings not in this map fall back to sitemap.js resolveUrl(), then inherit the last resolved URL.",
+
+  "AI Playbook – Home": "https://ai-playbook.danishagro.com",
+
+  "You've probably already used AI": "https://ai-playbook.danishagro.com/get-started/what-is-ai/simple-explanation",
+  "So what is generative AI, really?": "https://ai-playbook.danishagro.com/get-started/what-is-ai/simple-explanation",
+
+  "How AI Works": "https://ai-playbook.danishagro.com/get-started/what-is-ai/how-ai-works",
+
+  "Common misconceptions": "https://ai-playbook.danishagro.com/get-started/what-is-ai/common-misconceptions",
+
+  "What is AI?": "https://ai-playbook.danishagro.com/get-started/what-is-ai",
+
+  "Your quick start guide to AI at work": "https://ai-playbook.danishagro.com/get-started/getting-started-checklist/5-things-to-do-first",
+
+  "ChatGPT Setup Guide": "https://ai-playbook.danishagro.com/get-started/getting-started-checklist/configuring-your-ai-tool/chatgpt",
+  "Microsoft Copilot Setup Guide": "https://ai-playbook.danishagro.com/get-started/getting-started-checklist/configuring-your-ai-tool/microsoft-copilot",
+  "Claude Setup Guide": "https://ai-playbook.danishagro.com/get-started/getting-started-checklist/configuring-your-ai-tool/claude",
+  "Google Gemini Setup Guide": "https://ai-playbook.danishagro.com/get-started/getting-started-checklist/configuring-your-ai-tool/gemini",
+  "Le Chat (Mistral) Setup Guide": "https://ai-playbook.danishagro.com/get-started/getting-started-checklist/configuring-your-ai-tool/lechat",
+
+  "Configuring Your AI Tool": "https://ai-playbook.danishagro.com/get-started/getting-started-checklist/configuring-your-ai-tool",
+
+  "Getting Started Checklist": "https://ai-playbook.danishagro.com/get-started/getting-started-checklist",
+
+  "Get Started": "https://ai-playbook.danishagro.com/get-started",
+
+  "Data Protection Basics": "https://ai-playbook.danishagro.com/rules-and-safety/data-protection-basics",
+
+  "Rule 1: Always review AI output": "https://ai-playbook.danishagro.com/rules-and-safety/golden-rules/rule-1-always-review-ai-output",
+  "Rule 2: Never share confidential data": "https://ai-playbook.danishagro.com/rules-and-safety/golden-rules/rule-2-never-share-confidential-data",
+  "Rule 3: Be transparent when you use AI": "https://ai-playbook.danishagro.com/rules-and-safety/golden-rules/rule-3-be-transparent-when-you-use-ai",
+  "Rule 4: Use AI to enhance, not replace, your expertise": "https://ai-playbook.danishagro.com/rules-and-safety/golden-rules/rule-4-use-ai-to-enhance-not-replace-your-expertise",
+  "Rule 5: When in doubt, ask": "https://ai-playbook.danishagro.com/rules-and-safety/golden-rules/rule-5-when-in-doubt-ask",
+
+  "The Golden Rules": "https://ai-playbook.danishagro.com/rules-and-safety/golden-rules",
+
+  "Mistakes happen \u2014 here\u2019s what to do": "https://ai-playbook.danishagro.com/rules-and-safety/ive-shared-something-i-shouldnt",
+
+  "How We Manage AI Tools": "https://ai-playbook.danishagro.com/tools",
+  "Tools": "https://ai-playbook.danishagro.com/tools",
+
+  "Quality Checklist": "https://ai-playbook.danishagro.com/quality-assurance/quality-checklist",
+
+  "Layer 1: Fact-checking methods": "https://ai-playbook.danishagro.com/quality-assurance/how-to-validate-ai-output/layer-1-fact-checking-methods",
+  "Layer 2: Tone & style review": "https://ai-playbook.danishagro.com/quality-assurance/how-to-validate-ai-output/layer-2-tone-style-review",
+  "Layer 3: Logic & reasoning checks": "https://ai-playbook.danishagro.com/quality-assurance/how-to-validate-ai-output/layer-3-logic-reasoning-checks",
+  "Layer 4: Authenticity & ownership": "https://ai-playbook.danishagro.com/quality-assurance/how-to-validate-ai-output/layer-4-authenticity-ownership",
+
+  "How to Validate AI Output": "https://ai-playbook.danishagro.com/quality-assurance/how-to-validate-ai-output",
+
+  "Mistake Type 1: Hallucinations": "https://ai-playbook.danishagro.com/quality-assurance/common-ai-mistakes/1-hallucinations-making-things-up",
+  "Mistake Type 2: Outdated Information": "https://ai-playbook.danishagro.com/quality-assurance/common-ai-mistakes/2-outdated-information-wrong-about-timing",
+  "Mistake Type 3: Bias and Assumptions": "https://ai-playbook.danishagro.com/quality-assurance/common-ai-mistakes/3-bias-and-assumptions-unfair-defaults",
+  "Mistake Type 4: Generic Output": "https://ai-playbook.danishagro.com/quality-assurance/common-ai-mistakes/4-generic-output-sounds-good-says-nothing",
+
+  "Common AI Mistakes": "https://ai-playbook.danishagro.com/quality-assurance/common-ai-mistakes",
+
+  "Quality Assurance": "https://ai-playbook.danishagro.com/quality-assurance",
+
+  "Training & Field Documentation": "https://ai-playbook.danishagro.com",
+  "From Raw Notes to First Draft": "https://ai-playbook.danishagro.com",
+
+  "About This Playbook": "https://ai-playbook.danishagro.com/about-this-playbook"
+}

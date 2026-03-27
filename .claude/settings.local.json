@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm install:*)",
       "Bash(curl -s http://localhost:5174)",
-      "Bash(curl -s http://localhost:8787/api/playbook-chat -X POST -H \"Content-Type: application/json\" -d '{\"\"\"\"messages\"\"\"\":[{\"\"\"\"role\"\"\"\":\"\"\"\"user\"\"\"\",\"\"\"\"content\"\"\"\":\"\"\"\"test\"\"\"\"}]}')"
+      "Bash(curl -s http://localhost:8787/api/playbook-chat -X POST -H \"Content-Type: application/json\" -d '{\"\"\"\"messages\"\"\"\":[{\"\"\"\"role\"\"\"\":\"\"\"\"user\"\"\"\",\"\"\"\"content\"\"\"\":\"\"\"\"test\"\"\"\"}]}')",
+      "Bash(grep -E \"^[0-9]+:\\(#{1,4}\\) [A-ZÆØÅ][A-ZÆØÅ ]{3,}\")"
     ]
   }
 }

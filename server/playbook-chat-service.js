@@ -5,8 +5,17 @@ function getLastUserMessage(messages) {
   for (let i = messages.length - 1; i >= 0; i -= 1) {
     if (messages[i]?.role === "user") return String(messages[i].content || "");
   }
-
   return "";
+}
+
+// Concatenates the last `turns` user messages so follow-up questions like
+// "Who do I contact?" carry enough context for BM25 retrieval.
+function buildSearchQuery(messages, turns = 2) {
+  const parts = [];
+  for (let i = messages.length - 1; i >= 0 && parts.length < turns; i -= 1) {
+    if (messages[i]?.role === "user") parts.unshift(String(messages[i].content || "").trim());
+  }
+  return parts.join(" ").trim();
 }
 
 function toSourceMeta(chunks) {
@@ -27,7 +36,8 @@ export async function answerFromPlaybook(messages) {
     };
   }
 
-  const context = await searchKnowledge(question, 6);
+  const searchQuery = buildSearchQuery(messages);
+  const context = await searchKnowledge(searchQuery, 6);
 
   if (!context.length) {
     return {
@@ -42,8 +52,10 @@ export async function answerFromPlaybook(messages) {
     history: messages,
   });
 
+  const isFallback = result.reply.toLowerCase().includes("not covered in the ai playbook");
+
   return {
     reply: result.reply,
-    sources: toSourceMeta(context),
+    sources: isFallback ? [] : toSourceMeta(context),
   };
 }

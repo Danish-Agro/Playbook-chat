@@ -3,6 +3,7 @@ import path from "node:path";
 import { resolveUrl } from "./sitemap.js";
 
 const DOCS_ROOT = path.resolve(process.cwd(), "knowledge", "documents");
+const HINTS_PATH = path.resolve(process.cwd(), "knowledge", "sitemap-hints.json");
 const SUPPORTED_EXTENSIONS = new Set([".md", ".markdown", ".txt"]);
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutter
 
@@ -26,12 +27,21 @@ let cache = {
   chunks: [],
 };
 
+const PRESERVE_TERMS = new Set(["AI", "PR", "HR", "IT", "M365", "GDPR"]);
+
 function tokenize(text) {
-  return text
+  // Extract uppercase acronyms / known domain terms before lowercasing.
+  const preserved = (text.match(/\b[A-Z0-9]{2,6}\b/g) || [])
+    .filter((t) => PRESERVE_TERMS.has(t))
+    .map((t) => t.toLowerCase());
+
+  const general = text
     .toLowerCase()
     .replace(/[^a-z0-9æøå\s]/gi, " ")
     .split(/\s+/)
     .filter((t) => t.length > 2 && !STOP_WORDS.has(t));
+
+  return [...new Set([...general, ...preserved])];
 }
 
 async function walk(dir) {
@@ -50,12 +60,13 @@ async function walk(dir) {
   return files;
 }
 
-function makeChunks(filePath, content) {
+function makeChunks(filePath, content, hints = {}) {
   const rel = path.relative(DOCS_ROOT, filePath).replace(/\\/g, "/");
   const lines = content.split(/\r?\n/);
   const chunks = [];
 
   let heading = "Introduction";
+  let currentUrl = null;
   let buffer = [];
 
   const flush = () => {
@@ -64,22 +75,29 @@ function makeChunks(filePath, content) {
     if (!text) return;
 
     const maxSize = 1200;
-    const url = resolveUrl(heading);
     if (text.length <= maxSize) {
-      chunks.push({ file: rel, heading, url, text, tokens: tokenize(text) });
+      chunks.push({ file: rel, heading, url: currentUrl, text, tokens: tokenize(text) });
       return;
     }
 
     for (let i = 0; i < text.length; i += maxSize) {
       const part = text.slice(i, i + maxSize);
-      chunks.push({ file: rel, heading, url, text: part, tokens: tokenize(part) });
+      chunks.push({ file: rel, heading, url: currentUrl, text: part, tokens: tokenize(part) });
     }
   };
 
   for (const line of lines) {
     if (line.startsWith("#")) {
       flush();
-      heading = line.replace(/^#+\s*/, "").trim() || "Section";
+      const candidate = line.replace(/^#+\s*/, "").trim() || "Section";
+      // Danish layout labels (e.g. "HERO SEKTION", "QUOTE SEKTION") are CMS
+      // scaffolding, not content headings — keep the previous heading so chunks
+      // aren't attributed to a Danish string in source cards.
+      if (!/\bSEKTION\b/i.test(candidate)) {
+        heading = candidate;
+        const resolved = hints[heading] || resolveUrl(heading);
+        if (resolved) currentUrl = resolved;
+      }
       continue;
     }
 
@@ -95,13 +113,21 @@ export async function loadKnowledgeChunks() {
   if (now - cache.loadedAt < CACHE_TTL_MS) return cache.chunks;
 
   try {
+    let hints = {};
+    try {
+      const raw = await fs.readFile(HINTS_PATH, "utf8");
+      hints = JSON.parse(raw);
+    } catch {
+      // Missing or malformed hints file — degrade gracefully.
+    }
+
     const files = await walk(DOCS_ROOT);
     const docs = files.filter((f) => SUPPORTED_EXTENSIONS.has(path.extname(f).toLowerCase()));
 
     const chunks = [];
     for (const file of docs) {
       const content = await fs.readFile(file, "utf8");
-      chunks.push(...makeChunks(file, content));
+      chunks.push(...makeChunks(file, content, hints));
     }
 
     cache = { loadedAt: now, chunks };

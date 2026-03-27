@@ -125,7 +125,7 @@ export default function PlaybookSearch(props = {}) {
                           <div className="ps-sources">
                             <div className="ps-sources-heading">Read more in the Playbook</div>
                             {m.sources.filter((src) => src.url).map((src, si) => {
-                              const title = src.heading || src.title || src.file || "Kilde";
+                              const title = src.heading || src.title || src.file || "Source";
                               const excerpt = src.excerpt?.replace(/\*\*/g, "").replace(/\*/g, "").trim();
                               return (
                                 <a key={si} className="ps-source-item" href={src.url} target="_blank" rel="noopener noreferrer">
