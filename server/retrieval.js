@@ -1,9 +1,7 @@
-﻿import fs from "node:fs/promises";
+import fs from "node:fs/promises";
 import path from "node:path";
-import { resolveUrl } from "./sitemap.js";
 
-const DOCS_ROOT = path.resolve(process.cwd(), "knowledge", "documents");
-const HINTS_PATH = path.resolve(process.cwd(), "knowledge", "sitemap-hints.json");
+const CORPUS_ROOT = path.resolve(process.cwd(), "corpus");
 const SUPPORTED_EXTENSIONS = new Set([".md", ".markdown", ".txt"]);
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutter
 
@@ -60,13 +58,22 @@ async function walk(dir) {
   return files;
 }
 
-function makeChunks(filePath, content, hints = {}) {
-  const rel = path.relative(DOCS_ROOT, filePath).replace(/\\/g, "/");
-  const lines = content.split(/\r?\n/);
+function parseFrontmatter(content) {
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  if (!match) return { url: null, body: content };
+  const yaml = match[1];
+  const body = match[2];
+  const urlMatch = yaml.match(/^url:\s*(.+)$/m);
+  return { url: urlMatch ? urlMatch[1].trim() : null, body };
+}
+
+function makeChunks(filePath, content) {
+  const { url: fileUrl, body } = parseFrontmatter(content);
+  const rel = path.relative(CORPUS_ROOT, filePath).replace(/\\/g, "/");
+  const lines = body.split(/\r?\n/);
   const chunks = [];
 
   let heading = "Introduction";
-  let currentUrl = null;
   let buffer = [];
 
   const flush = () => {
@@ -76,13 +83,13 @@ function makeChunks(filePath, content, hints = {}) {
 
     const maxSize = 1200;
     if (text.length <= maxSize) {
-      chunks.push({ file: rel, heading, url: currentUrl, text, tokens: tokenize(text) });
+      chunks.push({ file: rel, heading, url: fileUrl, text, tokens: tokenize(text) });
       return;
     }
 
     for (let i = 0; i < text.length; i += maxSize) {
       const part = text.slice(i, i + maxSize);
-      chunks.push({ file: rel, heading, url: currentUrl, text: part, tokens: tokenize(part) });
+      chunks.push({ file: rel, heading, url: fileUrl, text: part, tokens: tokenize(part) });
     }
   };
 
@@ -95,8 +102,6 @@ function makeChunks(filePath, content, hints = {}) {
       // aren't attributed to a Danish string in source cards.
       if (!/\bSEKTION\b/i.test(candidate)) {
         heading = candidate;
-        const resolved = hints[heading] || resolveUrl(heading);
-        if (resolved) currentUrl = resolved;
       }
       continue;
     }
@@ -113,21 +118,13 @@ export async function loadKnowledgeChunks() {
   if (now - cache.loadedAt < CACHE_TTL_MS) return cache.chunks;
 
   try {
-    let hints = {};
-    try {
-      const raw = await fs.readFile(HINTS_PATH, "utf8");
-      hints = JSON.parse(raw);
-    } catch {
-      // Missing or malformed hints file — degrade gracefully.
-    }
-
-    const files = await walk(DOCS_ROOT);
+    const files = await walk(CORPUS_ROOT);
     const docs = files.filter((f) => SUPPORTED_EXTENSIONS.has(path.extname(f).toLowerCase()));
 
     const chunks = [];
     for (const file of docs) {
       const content = await fs.readFile(file, "utf8");
-      chunks.push(...makeChunks(file, content, hints));
+      chunks.push(...makeChunks(file, content));
     }
 
     cache = { loadedAt: now, chunks };
