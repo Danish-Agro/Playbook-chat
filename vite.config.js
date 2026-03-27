@@ -8,4 +8,10 @@ export default defineConfig({
       "/api": "http://localhost:8787",
     },
   },
+  test: {
+    environmentMatchGlobs: [
+      ["tests/server/**", "node"],
+      ["tests/client/**", "jsdom"],
+    ],
+  },
 });
