@@ -25,3 +25,5 @@ Thumbs.db
 
 knowledge/processed/
 knowledge/index/
+
+.claude/worktrees/
