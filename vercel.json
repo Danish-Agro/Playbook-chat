@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "api/playbook-chat.js": {
+      "includeFiles": "corpus/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/health", "destination": "/api/health" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
