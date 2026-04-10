@@ -1,6 +1,11 @@
 ﻿import http from "node:http";
-import { URL } from "node:url";
+import { URL, fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { readFile } from "node:fs/promises";
 import { answerFromPlaybook } from "./playbook-chat-service.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const WIDGET_FILE = join(__dirname, "..", "dist", "widget", "widget.js");
 
 const PORT = Number(process.env.PORT || 8787);
 const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX || 20);
@@ -90,6 +95,23 @@ const server = http.createServer(async (req, res) => {
     if (allowedOrigin) headers["Access-Control-Allow-Origin"] = allowedOrigin;
     res.writeHead(204, headers);
     res.end();
+    return;
+  }
+
+  // Serve the embeddable widget bundle — no origin restriction (script-tag loads
+  // don't send an Origin header, so the CORS check below would block them).
+  if (req.method === "GET" && url.pathname === "/widget.js") {
+    try {
+      const content = await readFile(WIDGET_FILE);
+      res.writeHead(200, {
+        "Content-Type": "application/javascript; charset=utf-8",
+        "Cache-Control": "public, max-age=3600",
+      });
+      res.end(content);
+    } catch {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end("widget.js not found — run: npm run build:widget");
+    }
     return;
   }
 

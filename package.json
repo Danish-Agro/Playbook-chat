@@ -8,6 +8,7 @@
     "dev:ui": "node ./scripts/vite-safe.cjs dev",
     "dev:api": "node --env-file=.env ./server/index.js",
     "build": "node ./scripts/vite-safe.cjs build",
+    "build:widget": "node ./scripts/vite-safe.cjs build --config vite.widget.config.js",
     "preview": "node ./scripts/vite-safe.cjs preview",
     "test": "vitest run"
   },
