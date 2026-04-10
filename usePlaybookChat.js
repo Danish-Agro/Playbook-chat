@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useMemo, useRef, useState } from "react";
 import { createPlaybookAPIClient } from "./playbook-chat.api.js";
 
 export function usePlaybookChat(options = {}) {
@@ -11,13 +11,8 @@ export function usePlaybookChat(options = {}) {
   const [loading, setLoading] = useState(false);
   const lastUserMessageRef = useRef(null);
 
-  const lastMsgRef = useRef(null);
   const textareaRef = useRef(null);
   const chatTextareaRef = useRef(null);
-
-  useEffect(() => {
-    lastMsgRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [messages, loading]);
 
   const autoResize = (ref) => {
     const el = ref.current;
@@ -86,7 +81,6 @@ export function usePlaybookChat(options = {}) {
     setInput,
     messages,
     loading,
-    lastMsgRef,
     textareaRef,
     chatTextareaRef,
     autoResize,

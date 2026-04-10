@@ -37,7 +37,6 @@ function makeHookStub(messages = []) {
     setInput: vi.fn(),
     messages,
     loading: false,
-    bottomRef: { current: null },
     textareaRef: { current: null },
     chatTextareaRef: { current: null },
     autoResize: vi.fn(),
