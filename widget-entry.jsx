@@ -19,6 +19,7 @@ function init() {
   shadow.appendChild(style);
 
   const container = document.createElement("div");
+  container.style.height = "100%";
   shadow.appendChild(container);
 
   mount(container, { apiEndpoint });
