@@ -11,12 +11,14 @@ export function usePlaybookChat(options = {}) {
   const [loading, setLoading] = useState(false);
   const lastUserMessageRef = useRef(null);
 
-  const bottomRef = useRef(null);
+  const messagesRef = useRef(null);
   const textareaRef = useRef(null);
   const chatTextareaRef = useRef(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = messagesRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
   const autoResize = (ref) => {
@@ -86,7 +88,7 @@ export function usePlaybookChat(options = {}) {
     setInput,
     messages,
     loading,
-    bottomRef,
+    messagesRef,
     textareaRef,
     chatTextareaRef,
     autoResize,

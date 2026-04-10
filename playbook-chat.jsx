@@ -16,7 +16,7 @@ export default function PlaybookSearch(props = {}) {
     setInput,
     messages,
     loading,
-    bottomRef,
+    messagesRef,
     textareaRef,
     chatTextareaRef,
     autoResize,
@@ -96,7 +96,7 @@ export default function PlaybookSearch(props = {}) {
 
       {mode === "chat" && (
         <div className="ps-chat-view">
-          <div className="ps-messages">
+          <div className="ps-messages" ref={messagesRef}>
             {messages.map((m, i) => (
               <div key={i}>
                 <div className={`ps-msg ${m.role}`}>
@@ -163,7 +163,6 @@ export default function PlaybookSearch(props = {}) {
                 </div>
               </div>
             )}
-            <div ref={bottomRef} />
           </div>
 
           <div className="ps-chat-input-wrap">
