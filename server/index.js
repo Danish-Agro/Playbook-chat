@@ -33,14 +33,15 @@ function isRateLimited(ip) {
   return false;
 }
 
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "")
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "https://ai-playbook.danishagro.com")
   .split(",")
   .map((o) => o.trim())
   .filter(Boolean);
 
 function getAllowedOrigin(req) {
   const origin = req.headers.origin || "";
-  if (ALLOWED_ORIGINS.length === 0 || ALLOWED_ORIGINS.includes(origin)) {
+  const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+  if (isLocalhost || ALLOWED_ORIGINS.includes(origin)) {
     return origin || "*";
   }
   return null;
