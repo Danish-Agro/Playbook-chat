@@ -10,7 +10,7 @@ export default defineConfig({
       formats: ["iife"],
       fileName: () => "widget.js",
     },
-    outDir: "dist/widget",
+    outDir: "dist",
     emptyOutDir: true,
     rollupOptions: {
       output: {

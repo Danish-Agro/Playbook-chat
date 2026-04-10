@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 import { answerFromPlaybook } from "./playbook-chat-service.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const WIDGET_FILE = join(__dirname, "..", "dist", "widget", "widget.js");
+const WIDGET_FILE = join(__dirname, "..", "dist", "widget.js");
 
 const PORT = Number(process.env.PORT || 8787);
 const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX || 20);
