@@ -121,6 +121,11 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === "GET" && url.pathname === "/") {
+    sendJson(res, 200, { status: "ok", service: "AI Playbook Chat API" }, allowedOrigin);
+    return;
+  }
+
   if (req.method === "GET" && url.pathname === "/health") {
     sendJson(res, 200, { ok: true }, allowedOrigin);
     return;
