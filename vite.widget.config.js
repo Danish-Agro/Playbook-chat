@@ -11,7 +11,7 @@ export default defineConfig({
       fileName: () => "widget.js",
     },
     outDir: "dist",
-    emptyOutDir: true,
+    emptyOutDir: false,
     rollupOptions: {
       output: {
         inlineDynamicImports: true,
