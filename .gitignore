@@ -27,3 +27,4 @@ knowledge/processed/
 knowledge/index/
 
 .claude/worktrees/
+.claude/settings.local.json
