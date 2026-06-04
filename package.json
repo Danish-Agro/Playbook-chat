@@ -10,7 +10,8 @@
     "build": "node ./scripts/vite-safe.cjs build",
     "build:widget": "node ./scripts/vite-safe.cjs build --config vite.widget.config.js",
     "preview": "node ./scripts/vite-safe.cjs preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "embed": "node --env-file=.env scripts/embed-corpus.js"
   },
   "dependencies": {
     "react": "^18.3.1",
