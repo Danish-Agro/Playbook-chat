@@ -2,7 +2,7 @@
   "buildCommand": "npm run build && npm run build:widget",
   "functions": {
     "api/playbook-chat.js": {
-      "includeFiles": ["corpus/**", "knowledge/**"]
+      "includeFiles": "corpus/**,knowledge/**"
     }
   },
   "rewrites": [
