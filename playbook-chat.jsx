@@ -28,18 +28,6 @@ export default function PlaybookSearch(props = {}) {
   return (
     <div className="ps-root">
       <header className="ps-header">
-        <div className="ps-logo">
-          <div className="ps-logo-mark">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <circle cx="9" cy="7" r="3" fill="white" />
-              <path d="M3 17c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </div>
-          <div>
-            <span className="ps-logo-text">AI Playbook</span>
-            <span className="ps-logo-sub"> · Danish Agro Group</span>
-          </div>
-        </div>
         {mode === "chat" && (
           <button className="ps-reset-btn" onClick={reset} aria-label="Start new question">
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
@@ -54,12 +42,10 @@ export default function PlaybookSearch(props = {}) {
         <div className="ps-search-view">
           <div className="ps-eyebrow">AI Playbook Assistant</div>
           <h1 className="ps-headline">
-            Ask anything about
-            <br />
-            <span>using AI at work</span>
+            Ask the AI Playbook
           </h1>
           <p className="ps-subline">
-            Get instant answers on rules, data safety, prompt techniques, and approved tools — straight from the Danish Agro AI Playbook.
+            Not sure where to start? Ask a question and we’ll help you find the right guidance, rule, prompt or checklist.
           </p>
 
           <div className="ps-searchbox">
