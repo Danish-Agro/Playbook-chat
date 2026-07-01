@@ -72,7 +72,6 @@ export function usePlaybookChat(options = {}) {
     setMode("search");
     setMessages([]);
     setInput("");
-    setTimeout(() => textareaRef.current?.focus(), 80);
   };
 
   return {

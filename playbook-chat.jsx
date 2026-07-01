@@ -60,7 +60,6 @@ export default function PlaybookSearch(props = {}) {
                 autoResize(textareaRef);
               }}
               onKeyDown={onKey()}
-              autoFocus
             />
             <button className="ps-search-send" onClick={() => send()} disabled={!input.trim() || loading} aria-label="Send question">
               <SendIcon />
@@ -163,7 +162,6 @@ export default function PlaybookSearch(props = {}) {
                   autoResize(chatTextareaRef);
                 }}
                 onKeyDown={onKey()}
-                autoFocus
               />
               <button className="ps-chat-send" onClick={() => send()} disabled={!input.trim() || loading} aria-label="Send message">
                 <SendIcon />
